@@ -1,0 +1,56 @@
+function onOpen(){
+  var ui = SpreadsheetApp.getUi();
+
+  ui.createMenu("方眼紙")
+  .addItem("クイック方眼", "quickHougan")
+  .addItem("数値入れて方眼", "Hougan")
+  .addToUi();
+}
+
+// クイック方眼
+function quickHougan(){  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+
+  // 基準として一番上Rowの高さを取得…。
+  var size = sheet.getRowHeight(1);
+
+  doHougan(size,sheet);
+}
+
+// 方眼化実行
+function doHougan(size){
+
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  // Rows
+  for(var i=1; i<=sheet.getMaxRows(); i++){
+    sheet.setRowHeight(i, size);
+  }
+
+  // Columns
+  for(var i=1; i<=sheet.getMaxColumns(); i++){
+    sheet.setColumnWidth(i, size);
+  }
+}
+
+// 数値を入力して方眼
+function Hougan(){
+  var ui = SpreadsheetApp.getUi();
+
+  var result = ui.prompt(
+    "数値を入力して方眼化",
+    "1以上の数字を入力してください(デフォルトは21):",
+    ui.ButtonSet.OK_CANCEL);
+
+  var button = result.getSelectedButton();
+  var text = result.getResponseText();
+
+  if(button == ui.Button.OK){
+    var size = parseInt(text);
+    if(size >= 1) {
+      doHougan(size);  
+    }else{  
+      ui.alert("1以上の数字を入力してください。");
+    }
+  }  
+}
